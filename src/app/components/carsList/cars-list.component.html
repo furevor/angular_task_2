@@ -1,0 +1,18 @@
+<h2>Cars List</h2>
+<ng-container *ngIf="(carsList$ | async) as carsList">
+    <ul class="cars">
+        <li *ngFor="let car of carsList"
+
+            (click)="onSelect(car)">
+            <span class="badge">{{car.id}}</span> {{car.name}}
+        </li>
+    </ul>
+</ng-container>
+
+<div *ngIf="(selectedElements$ | async) as elements;">
+
+    <ng-container *ngFor="let elem of elements">
+        <h2>{{ elem | uppercase }}</h2>
+    </ng-container>
+
+</div>
