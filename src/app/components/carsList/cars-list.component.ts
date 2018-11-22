@@ -33,9 +33,8 @@ export class CarsListComponent implements OnInit, OnDestroy {
         // searching for all cars list
         this.searchService.getCarsFromService();
 
+        // set initial car list in component
         this.carsList$ = this.searchService.getCars().pipe(tap(val => console.log(val)));
-
-        let temp = this.searchService.getCars().subscribe(val => console.log(val));
 
         this.routeParamsResolver$ = this.route.paramMap.pipe(map(params => {
             // here is code for resolving params and creating different types events
@@ -55,7 +54,7 @@ export class CarsListComponent implements OnInit, OnDestroy {
         let searchResult$ = this.routeParamsResolver$.pipe(
             filter(evt => evt instanceof ParamsSearchEvent),
             mergeMap    (params => {
-                return of(this.findElements([], params['searchItem'])).pipe(delay(1000 + Math.random() * 1000));
+                return of(this.findElements(this.searchService.carsSrorage.value, params['searchItem'])).pipe(delay(1000 + Math.random() * 1000));
             }), share());
 
         // searchResult$.subscribe();
@@ -67,21 +66,17 @@ export class CarsListComponent implements OnInit, OnDestroy {
         this.selectedElements$ = searchResult$.pipe(
             map(results => results.map(elem => this.getElementInfo(elem))));
 
-
         let spinnerManager$: Observable<any> = merge(this.routeParamsResolver$, searchResult$);
         spinnerManager$.subscribe(val => {
           if(val instanceof ParamsSearchEvent) {
-            console.log('blabla')
             this.spinner.show();
           }
 
           if(val instanceof Array) {
-            console.log('adsdadaas')
             this.spinner.hide();
           }
 
         });
-
     }
 
     getElementInfo(element) {
