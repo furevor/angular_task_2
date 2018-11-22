@@ -18,6 +18,7 @@ export class CarsListComponent implements OnInit, OnDestroy {
 
     carsList$: Observable<Car[]>;
     selectedElements$: Observable<string[]>;
+    test$: Observable<string>;
 
     routeParamsResolver$: Observable<ParamsEvent>;
 
@@ -29,7 +30,6 @@ export class CarsListComponent implements OnInit, OnDestroy {
                 private searchService: SearchContentService) {}
 
     ngOnInit() {
-
         // searching for all cars list
         this.searchService.getCarsFromService();
 
@@ -45,19 +45,21 @@ export class CarsListComponent implements OnInit, OnDestroy {
 
             let validate = !!type_ || !!name || !!id;
 
-            if (validate)
+            if (validate) {
                 return new ParamsSearchEvent({name: name, type_: type_, id: id} as Car);
-                // return new ParamsSearchEvent(new Car(name, type_, id));
+            }
         }));
 
 
         let searchResult$ = this.routeParamsResolver$.pipe(
             filter(evt => evt instanceof ParamsSearchEvent),
             mergeMap    (params => {
-                return of(this.findElements(this.searchService.carsSrorage.value, params['searchItem'])).pipe(delay(1000 + Math.random() * 1000));
-            }), share());
+                return of(this.findElements(this.searchService.carsStorage.value, params['searchItem']));
+            }),
+            delay(1000 + Math.random() * 1000),
+            share()
+        );
 
-        // searchResult$.subscribe();
         searchResult$.subscribe(results => {
             console.log('Here is new title - ' + this.getElementInfo(results[0]));
             this.titleService.setTitle(this.getElementInfo(results[0]));

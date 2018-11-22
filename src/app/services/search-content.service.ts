@@ -11,20 +11,19 @@ import {share, tap} from "rxjs/operators";
 })
 export class SearchContentService {
 
-    carsSrorage: BehaviorSubject<Car[]>;
+    carsStorage: BehaviorSubject<Car[]>;
 
     constructor() {
-        this.carsSrorage = new BehaviorSubject<Car[]>(null);
-        // this.cars$ = of(Math.random()).pipe(tap(val => console.log('tell me your share secret')));
+        this.carsStorage = new BehaviorSubject<Car[]>(null);
     }
 
     getCarsFromService(): void {
         // here you can send http data request, subscribe it and push next value to BehaviorSubject
-        this.carsSrorage.next(CARS);
+        this.carsStorage.next(CARS);
     }
 
     getCars(): Observable<Car[]> {
-        return this.carsSrorage.asObservable();
+        return this.carsStorage.asObservable();
     }
 
 
